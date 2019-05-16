@@ -1,0 +1,27 @@
+# vscode
+.vscode
+
+# Mac
+.DS_Store
+._.DS_Store
+
+# pyenv
+venv/
+.venv/
+
+# python 
+*.pyc
+*.pro
+*~
+__pycache__
+
+# QML
+*.qmlc
+
+# makefile
+*.[oa]
+*.so
+hexdump/hexdump
+float2byte/float2byte
+
+# audio 
