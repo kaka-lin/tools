@@ -9,6 +9,7 @@ SNR_dB = 10 * log(SNR)
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.fftpack import fft, ifft
 from scipy.io import wavfile as wav
 
 # Add white Gaussian noise to signal
@@ -16,7 +17,7 @@ def awgn(x, snr):
     # SNR = 10 ^ (SNR_dB / 10)
     snr = 10 ** (snr / 10.0)
     # A_sig ^ 2 = (x1^2 + x2^2 + ... + xn^2) / n
-    xpower = np.sum(np.abs(x ** 2) / len(x))
+    xpower = np.sum(np.abs(x ** 2)) / len(x)
     npower = np.abs(xpower / snr)
 
     # np.random.randn():
@@ -43,21 +44,24 @@ if __name__ == "__main__":
     x = np.arange(0, t, Ts)
     yn, n = awgn(yl, 6)
 
-    plt.figure() 
-    plt.subplot(221) 
-    plt.plot(x[:441], yl[:441], 'k')
-    plt.title("The original signal") 
-    plt.subplot(222) 
-    plt.plot(x[:441], yl[:441], 'k')
-    plt.plot(x[:441], yn[:441], 'r')
-    plt.title("The original sinal with Gauss White Noise") 
-    plt.subplot(223) 
-    plt.hist(n, bins=100, density=True) 
-    plt.title("Gauss Noise Distribution") 
-    plt.subplot(224) 
-    plt.psd(n)
-    plt.title("PSD")
-    plt.tight_layout() 
-    #plt.savefig("img/snr_wav.png", dpi=600)
+    """ Parseval's theorem
+    
+    np.sum(np.abs(sig)**2) == np.sum(np.abs(np.fft.fft(sig))**2)/sig.size
 
-    plt.show()
+    power = np.sum(np.abs(sig)**2)/sig.size
+          = np.sum(np.abs(np.fft.fft(sig))**2)/(sig.size**2)
+    """
+    # By Parseval's theorem, 
+    # we can calculate the power of a signal through X[k] that is the FFT of x[n].
+    yfft = fft(yl)
+    ynfft = fft(yn)
+    xpower = np.sum(np.abs(yfft ** 2)) / (len(yfft) ** 2)
+
+    noise = yn - yl
+    nfft = fft(noise)
+    npower = np.sum(np.abs(nfft ** 2)) / (len(nfft) ** 2)
+
+    # SNR 
+    snr = xpower / npower
+    snr_dB = 10 * np.log10(snr)
+    print("SNR: {}dB".format(round(snr_dB, 2)))
