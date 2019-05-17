@@ -13,21 +13,20 @@ if __name__ == "__main__":
     x = np.arange(0, t, Ts)
 
     fft_left = fft(left_data)
-    yw = np.abs(fft_left[0:int(N//2)]) / N
+    yw = np.abs(fft_left[:N//2]) / N
     xw = np.linspace(0.0, 1.0/(2.0*Ts), N//2)
-    
+
+    plt.figure()
     plt.subplot(211)
     plt.plot(x[:441], left_data[:441], 'k')
     plt.xlabel("Time [s]")
     plt.ylabel("Amplitude")
-    plt.grid()
-    plt.tight_layout()
-
     plt.subplot(212)
     plt.plot(xw, yw, 'r')
+    plt.xlim(0, fs//2)
     plt.xlabel("Frequency [Hz]")
     plt.ylabel("magnitude")
+    
     plt.grid()
     plt.tight_layout()
-
     plt.show()
