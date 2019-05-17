@@ -14,7 +14,7 @@ from scipy.io import wavfile as wav
 # Add white Gaussian noise to signal
 def awgn(x, snr): 
     # SNR = 10 ^ (SNR_dB / 10)
-    snr = 10 ** (snr / 10.0) 
+    snr = 10 ** (snr / 10.0)
     xpower = np.abs(np.sum(x ** 2) / len(x))
     npower = np.abs(xpower / snr)
 
@@ -24,22 +24,31 @@ def awgn(x, snr):
     return x+n, n
 
 if __name__ == "__main__":
+    # sampling and signal information
     fs, data = wav.read("audio/gen.wav")
     Ts = 1.0 / fs
     N = len(data)
     t = N / fs
-    left_data = data[:, 0]
-    right_data = data[:, 1]
+    amplitude = np.max(data)
+
+    # avoid overflow -> normalization (-1, 1)
+    y = data / amplitude
+    
+    # channel data
+    yl = y[:, 0]
+    yr = y[:, 1]
+
+    # use left channel
     x = np.arange(0, t, Ts)
-    yn, n = awgn(left_data, 6)
+    yn, n = awgn(yl, 6)
 
     plt.figure() 
     plt.subplot(221) 
-    plt.plot(x[:441], left_data[:441], 'k')
+    plt.plot(x[:441], yl[:441], 'k')
     plt.title("The original signal") 
     plt.subplot(222) 
+    plt.plot(x[:441], yl[:441], 'k')
     plt.plot(x[:441], yn[:441], 'r')
-    plt.plot(x[:441], left_data[:441], 'k')
     plt.title("The original sinal with Gauss White Noise") 
     plt.subplot(223) 
     plt.hist(n, bins=100, density=True) 

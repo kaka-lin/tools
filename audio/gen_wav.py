@@ -7,7 +7,7 @@ if __name__ == "__main__":
     # Sampling information
     fs = 44100    # Sample rate
     Ts = 1.0 / fs # Sample period
-    t = 2.0 # duration
+    t = 1.0 # duration
     N = fs * t
 
     # Signal information
