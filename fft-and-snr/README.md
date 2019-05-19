@@ -12,20 +12,30 @@ A `fast Fourier transform (FFT)` is an algorithm that computes the `discrete Fou
     
     `O(nlog(n))`
 
-### Step
-
-```
-     sampling                 DFT
-x(t) --------> x(kTs) = x[n] -----> X[k]
-```
-
-#### 1. Sampling Theorem
+### 1. Sampling Theorem
 
 ![](img/sampling.png)
 
-#### 2. Discrete Fourier Transform
+### 2. Discrete Fourier Transform
 
 ![](img/DFT.png)
+
+DFT就是先將信號在時域離散化，求其連續傅立葉變換後，再在頻域離散化的結果。
+
+```
+      sampling                   DFT
+x(t) ---------> x(kTs) = x[n] ---------> x[k]
+```
+
+### Frequency resolution
+
+The `frequency of a point n` is:
+    
+    Fn = (n-1) * (fs / N)
+
+=> The `Frequency resolution` is:
+
+    Fres = fs / N
 
 ---
 <span id="snr"></span>

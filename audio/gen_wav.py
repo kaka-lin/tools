@@ -22,15 +22,6 @@ if __name__ == "__main__":
     # 在轉型成 int() 時會全部變成0
     y = amplitude * np.sin(2 * np.pi * f * x)
 
-    ####### square wave ##########
-    # y = 100* sg.square(2 *np.pi * f *x / Fs )
-
-    ####### square wave with Duty Cycle ##########
-    # y = 100* sg.square(2 *np.pi * f *x / Fs , duty = 0.8)
-
-    ####### Sawtooth wave ########
-    # y = 100* sg.sawtooth(2 *np.pi * f *x / Fs )
-
     wf = wave.open("audio/gen.wav",'w')
     # wave.setparams(nchannels, sampwidth, framerate, nframes, comptype, compname)
     wf.setparams((channel, 2, fs, 0, 'NONE', 'not compressed'))

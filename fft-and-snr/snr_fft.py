@@ -27,7 +27,7 @@ def awgn(x, snr):
 
 if __name__ == "__main__":
     # sampling and signal information
-    fs, data = wav.read("audio/gen.wav")
+    fs, data = wav.read("audio/test1.wav")
     Ts = 1.0 / fs
     N = len(data)
     t = N / fs
@@ -65,3 +65,11 @@ if __name__ == "__main__":
     snr = xpower / npower
     snr_dB = 10 * np.log10(snr)
     print("SNR: {}dB".format(round(snr_dB, 2)))
+
+    plt.figure() 
+    plt.plot(x[:441], yl[:441], 'k')
+    plt.plot(x[:441], yn[:441], 'r')
+    plt.title("The original sinal with Gauss White Noise") 
+    
+    plt.tight_layout() 
+    plt.show()
