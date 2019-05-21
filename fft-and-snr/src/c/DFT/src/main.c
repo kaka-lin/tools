@@ -12,12 +12,32 @@ void DFT(double *src, complex *dst, int size)
         
         for (int n = 0; n < size; n++) {
             real += src[n] * cos(2 * pi *k * n / size);
-            imag += src[n] * (-1) * sin(2 * pi *k * n / size);
+            imag += ((-1) * src[n] * sin(2 * pi * k * n / size));
         }
 
         dst[k].real = real;
         dst[k].imag = imag;
     }
+}
+
+complex *IDFT(complex *src, int size)
+{ 
+    complex *dst = calloc(size, sizeof(double));
+
+    for (int n = 0; n < size; n++) {
+        double real = 0;
+        double imag = 0;
+
+        for (int k = 0; k < size; k++) {
+            real += src[k].real * cos(2 * pi * k * n / size) - src[k].imag * sin(2 * pi * k * n / size);
+            imag += src[k].real * sin(2 * pi * k * n / size) + src[k].imag * cos(2 * pi * k * n / size);
+        }
+
+        dst[n].real = real / size;
+        dst[n].imag = imag / size;
+    }
+
+    return dst;
 }
 
 int main(int argc, char **argv)
@@ -58,6 +78,18 @@ int main(int argc, char **argv)
             printf("\n\t ");
         }
         printf("%.2f%c%.2f%s", yf[i].real, (yf[i].imag >= 0 ? '+': '\0'), yf[i].imag, (i == N-1 ? "j" : "j, "));
+    }
+    printf("]\n");
+
+
+    complex *yif = IDFT(yf, N);
+
+    printf("IDFT: \n\t[");
+    for (int i = 0; i < N; i++) {
+        if (i != 0 && i % 4 == 0) {
+            printf("\n\t ");
+        }
+        printf("%.2f%c%.2f%s", yif[i].real, (yif[i].imag >= 0 ? '+': '\0'), yif[i].imag, (i == N-1 ? "j" : "j, "));
     }
     printf("]\n");
    
