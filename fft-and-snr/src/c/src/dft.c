@@ -4,59 +4,59 @@
 #include <string.h>
 #include "common.h"
 
-void DFT(double *src, complex *dst, int size)
-{
+complex *DFT(double *x, int size)
+{   
+    complex *y = calloc(size, sizeof(complex));
+
     for (int k = 0; k < size; k++) {
-        double real = 0;
-        double imag = 0;
+        double real = 0.0;
+        double imag = 0.0;
         
         for (int n = 0; n < size; n++) {
-            real += src[n] * cos(2 * pi *k * n / size);
-            imag += ((-1) * src[n] * sin(2 * pi * k * n / size));
+            real += x[n] * cos(2 * pi *k * n / size);
+            imag += ((-1) * x[n] * sin(2 * pi * k * n / size));
         }
 
-        dst[k].real = real;
-        dst[k].imag = imag;
+        y[k].real = real;
+        y[k].imag = imag;
     }
+
+    return y;
 }
 
-complex *IDFT(complex *src, int size)
+complex *IDFT(complex *x, int size)
 { 
-    complex *dst = calloc(size, sizeof(double));
+    complex *y = calloc(size, sizeof(complex));
 
     for (int n = 0; n < size; n++) {
-        double real = 0;
-        double imag = 0;
+        double real = 0.0;
+        double imag = 0.0;
 
         for (int k = 0; k < size; k++) {
-            real += src[k].real * cos(2 * pi * k * n / size) - src[k].imag * sin(2 * pi * k * n / size);
-            imag += src[k].real * sin(2 * pi * k * n / size) + src[k].imag * cos(2 * pi * k * n / size);
+            real += x[k].real * cos(2 * pi * k * n / size) - x[k].imag * sin(2 * pi * k * n / size);
+            imag += x[k].real * sin(2 * pi * k * n / size) + x[k].imag * cos(2 * pi * k * n / size);
         }
 
-        dst[n].real = real / size;
-        dst[n].imag = imag / size;
+        y[n].real = real / size;
+        y[n].imag = imag / size;
     }
 
-    return dst;
+    return y;
 }
 
 int main(int argc, char **argv)
 {   
-    // Sampling information
+    /* Sampling information */
     int fs = 80;
     float Ts = 1.0 / fs;
     float t = 1;
     int N = fs * t;
     
-    // signal information
+    /* signal information */ 
     int f = 20;
     float *x = arange(0, t, Ts);
+    double y[N]; // y = cos(2*pi*f*x)
 
-    double y[N];
-    complex yf[N];
-    memset(yf, 0, sizeof yf);
-
-    // Input signal
     printf("Input array: \n\t[");
     for (int i = 0; i < N; i++) {
         if (i != 0 && i % 4 == 0) {
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     // Discrete Fourier Tranform (DFT)
     // According to the DFT formula, 
     // time complexity: O(n^2)
-    DFT(y, yf, N);
+    complex *yf = DFT(y, N);
 
     printf("DFT: \n\t[");
     for (int i = 0; i < N; i++) {
