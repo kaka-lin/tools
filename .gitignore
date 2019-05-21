@@ -23,5 +23,7 @@ __pycache__
 *.so
 hexdump/hexdump
 float2byte/float2byte
+fft-and-snr/src/c/DFT/dft
 
 # audio 
+

@@ -8,13 +8,14 @@ typedef struct complex {
 } complex;
 
 // numpy.arange(strat, stop, step, dtype=None)
-float *arange(float start, float stop, float step) {
+float *arange(float start, float stop, float step) 
+{
     int N = (int)((1 / step) * stop);
     float *array = calloc(N, sizeof(float));
 
     for (int index = 0; index < N; index++) {
         array[index] = start + index * step;
-        //printf("%d %f\n", index, array[index]);
+        //printf("%f ", array[index]);
     }
     
     return array;
