@@ -2,89 +2,135 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 #include "common.h"
 
-void print_binary(unsigned int n) {
-    if (n == 0) {
-        printf("0");
-        return;
-    }
-
-    unsigned int x;
-    for (int bit = 31; bit >= 0; bit--) {
-        x = n >> bit;
-
-        if (x & 1) printf("1");
-        else printf("0");
-    }
-    printf("\n");
+int is_two_n(int num)
+{
+    /* ex: num = 8, 8-1 = 7
+     *   
+     * 8:　    1000
+     * 7:　　& 0111
+     *      -------
+     *        0000
+     */ 
+	if ((num & (num - 1)) == 0)
+		return 1;
+	return 0;
 }
 
 // bit-reversal permutation
-void bit_reverse(double *input, int size)
+void bit_reverse(struct fft_info *fft_info)
 {
-    /* bit-reverse 
-    * 
-    * ex:
-    *     3 bit -> max 7
-    *     x[0], (000) -> (000), x[0]
-    *     x[1], (001) -> (100), x[4]
-    *     x[2], (010) -> (010), x[2]
-    *     x[3], (011) -> (110), x[6]
-    *     and so on. 
-    * sol:
-    *     011, 從最右邊開始取值,如果為1, 就加到最左邊依序遞減
-    *     [i = 0]: 1 -> 000 | 100 (1 << index (N = 3 => index = N - i - 1))
-    *     [i = 1]: 1 -> 100 | 010 (1 << index (N = 3 => index = N - i - 1))
-    *     [i = 2]: 0 不做事情
-    */
-    int bits = log2(size);
-    int *reverse = calloc(size, sizeof(int));
+    int N = fft_info->len;
+    int bits;
+
+    if (!is_two_n(N)) {
+        bits = log2(N) + 1;
+        N = pow(2, bits);
+    } else {
+        bits = log2(N);
+    }
+
+    double *reverse = calloc(N, sizeof(float));
+    int reverse_index;
 
     // Nlog(N)
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < N; i++) {
+        reverse_index = 0;
         for (int j = 0; j < bits; j++) { 
             if ((i >> j) & 1) {
-                reverse[i] |= (1 << (bits - j - 1));
+                reverse_index |= (1 << (bits - j - 1));
             }
         }
+        reverse[i] = fft_info->input[reverse_index];
     }
 
-    for (int i = 0; i < size; i++) {
-        printf("%d -> %d\n", i, reverse[i]);
-    }
+    fft_info->input = reverse;
+    fft_info->len = N;
 }
 
 /* Cooley-Tukey Fast Fourier Transform(FFT) Algorithm
  *
  * 1. radix-2 decimation-in-time (DIT) FFT
+ *    -> O(NlogN)
  */
-void FFT(double *x, int size)
+void FFT(struct fft_info *fft_info)
 {   
+    clock_t start, end;
+    start = clock();
+
+    // bit-reversal permutation */
+    bit_reverse(fft_info);
+    //print_array(fft_info->input, fft_info->len);
+
+    int N = fft_info->len;
+    double *x = fft_info->input;
+    complex *y = calloc(N, sizeof(complex));
+
+    complex Wn, G, H;
+
+    // dynamic programming
+    for (int k = 2; k <= N; k<<=1) {
+        memset(&Wn, 0.0, sizeof(complex));
+        memset(&G, 0.0, sizeof(complex));
+        memset(&H, 0.0, sizeof(complex));
+
+        Wn.real = cos(2*pi*k/N);
+        Wn.imag = (-1) * sin(2*pi*k/N);
+
+        for (int i = 0; i < N; i+=k) {
+            for (int j=i; j<i+k/2; j++) {
+                printf("k: %d, i:%d, j:%d, j+k/2: %d\n", k, i, j, j+(k/2));
+            }
+        }
+        //for (int r = 0; r < N; r+=k) {
+        //    G.real += x[2*r] * cos(2*pi*2*r*k / N);
+        //    G.imag += x[2*r] * (-1) * sin(2*pi*2*r*k / N);
+        //    H.real += x[2*r+1] * cos(2*pi*2*r*k / N);
+        //    H.imag += x[2*r+1] * (-1) * sin(2*pi*2*r*k / N);
+        //}
+
+        //y[k].real = G.real + Wn.real * H.real - Wn.imag * H.imag;
+        //y[k].imag = G.imag + Wn.real * H.imag + Wn.imag * H.real;
+        //y[k+N/2].real = G.real - Wn.real * H.real + Wn.imag * H.imag;
+        //y[k+N/2].imag = G.imag - Wn.real * H.imag - Wn.imag * H.real;
+    }
+
+    fft_info->output = y;
+
+    end = clock();
+    printf("FFT, %lf secs:\n", (end-start) / (double)(CLOCKS_PER_SEC));
 }
 
 int main(int argc, char **argv)
-{   
+{       
+    struct fft_info fft_info;
+
     /* Sampling information */
-    int fs = 16;
-    float Ts = 1.0 / fs;
-    float t = 1;
+    int fs = 4;
+    double Ts = 1.0 / fs;
+    double t = 1.0;
     int N = fs * t;
     
-    /* signal information */ 
+    /* signal information */
     int f = 1;
-    float *x = arange(0, t, Ts);
-    double y[N]; // y = cos(2*pi*f*x)
+    double *x = arange(0, t, Ts);
+    //printf("time:\n");
+    //print_array(x, N);
 
-    printf("[");
+    // y = cos(2*pi*f*x)
+    double y[N]; 
     for (int i = 0; i < N; i++) {
         y[i] = cos(2 * pi * f * x[i]);
-        printf("%.2f%s", y[i], (i == N-1 ? "\0" : ", "));
     }
-    printf("]\n");
-    
-    bit_reverse(y, N);
 
+    fft_info.len = N;
+    fft_info.input = y;
+
+    /* Fast Fourier Tranform (FFT) */
+    FFT(&fft_info);
+    print_complex_array(fft_info.output, fft_info.len);
+    
     return 0;
 }
-
