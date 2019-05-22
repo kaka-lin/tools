@@ -25,6 +25,7 @@ hexdump/hexdump
 float2byte/float2byte
 fft-and-snr/src/c/dft
 fft-and-snr/src/c/fft
+bit-reverse/bitreverse
 
 # audio 
 
