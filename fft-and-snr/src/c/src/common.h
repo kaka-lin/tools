@@ -9,7 +9,7 @@ typedef struct complex {
 
 struct fft_info {
     int len;
-    double *input;
+    complex *input;
     complex *output;
 };
 

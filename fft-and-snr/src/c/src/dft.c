@@ -26,7 +26,7 @@ complex *DFT(double *x, int N)
     }
 
     end = clock();
-    printf("DFT, %lf secs:\n", (end-start) / (double)(CLOCKS_PER_SEC));
+    printf("DFT: %lfs:\n", (end-start) / (double)(CLOCKS_PER_SEC));
 
     return y;
 }
@@ -54,13 +54,13 @@ complex *IDFT(complex *x, int N)
 int main(int argc, char **argv)
 {   
     /* Sampling information */
-    int fs = 4;
+    int fs = 16;
     double Ts = 1.0 / fs;
     double t = 1.0;
     int N = fs * t;
     
     /* signal information */ 
-    int f = 1;
+    int f = 5;
     double *x = arange(0, t, Ts);
     
     // y = cos(2*pi*f*x)
@@ -69,8 +69,8 @@ int main(int argc, char **argv)
         y[i] = cos(2 * pi * f * x[i]);
     }
 
-    //printf("Input array:\n");
-    //print_array(y, N);
+    printf("Input array:\n");
+    print_array(y, N);
 
     // Discrete Fourier Tranform (DFT)
     // According to the DFT formula, 
@@ -79,9 +79,9 @@ int main(int argc, char **argv)
     printf("DFT:\n");
     print_complex_array(yf, N);
 
-    //complex *yif = IDFT(yf, N);
-    //printf("IDFT:\n");
-    //print_complex_array(yif, N);
+    complex *yif = IDFT(yf, N);
+    printf("IDFT:\n");
+    print_complex_array(yif, N);
    
     return 0;
 }
