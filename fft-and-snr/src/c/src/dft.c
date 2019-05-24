@@ -26,7 +26,7 @@ complex *DFT(double *x, int N)
     }
 
     end = clock();
-    printf("DFT: %lfs:\n", (end-start) / (double)(CLOCKS_PER_SEC));
+    printf("DFT, N: %d, spends time: %lfs\n", N, (end-start) / (double)(CLOCKS_PER_SEC));
 
     return y;
 }
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
         y[i] = cos(2 * pi * f * x[i]);
     }
 
-    printf("Input array:\n");
+    printf("Input:\n");
     print_array(y, N);
 
     // Discrete Fourier Tranform (DFT)
@@ -80,8 +80,8 @@ int main(int argc, char **argv)
     print_complex_array(yf, N);
 
     complex *yif = IDFT(yf, N);
-    printf("IDFT:\n");
-    print_complex_array(yif, N);
+    //printf("IDFT:\n");
+    //print_complex_array(yif, N);
    
     return 0;
 }

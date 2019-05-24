@@ -49,7 +49,6 @@ void bit_reverse(struct fft_info *fft_info)
             reverse[i].real = fft_info->input[reverse_index].real;
     }
 
-    //print_complex_array(reverse, N);
     fft_info->input = reverse;
     fft_info->len = N;
 }
@@ -66,7 +65,6 @@ void FFT(struct fft_info *fft_info)
 
     // bit-reversal permutation */
     bit_reverse(fft_info);
-    //print_complex_array(fft_info->input, fft_info->len);
 
     int N = fft_info->len;
     complex *x = fft_info->input;
@@ -78,7 +76,7 @@ void FFT(struct fft_info *fft_info)
     //   3個stage: 1 -> 2 -> 3
     //    ->　DFT架構(Butterfly跨越的數): 2 -> 4 -> 8  
     for (int k = 2; k <= N; k<<=1) {
-        printf("Stage %.f: \n", log2((double)k));
+        //printf("Stage %.f: \n", log2((double)k));
 
         // 2. 每個stage做一次FFT
         //   每個stage分成 (N / 2^s(=k)) 個 group
@@ -91,7 +89,7 @@ void FFT(struct fft_info *fft_info)
             //    6, 7  
             memset(&W, 0, sizeof(W));
 
-            printf("\t");
+            //printf("\t");
             for (int i = g; i < g + k/2; i++) {
                 // 公式: 
                 //     W^(k/N), k = 每個group的DFT架構的even
@@ -100,7 +98,7 @@ void FFT(struct fft_info *fft_info)
                 // stage3: N = 8 (N)
                 W.real = cos(2 * pi * i / k); 
                 W.imag = (-1) * sin(2 * pi * i / k);
-                printf("%d %d, w: %.2f%+.2fj, ", i, i + k / 2, W.real, W.imag);
+                //printf("%d %d, w: %.2f%+.2fj, ", i, i + k / 2, W.real, W.imag);
                 
                 // 公式: 
                 //     X[k] = x[2r],even + W * x[2r+1],odd
@@ -120,15 +118,14 @@ void FFT(struct fft_info *fft_info)
                 x[i + k / 2].real = a.real - b.real;
                 x[i + k / 2].imag = a.imag - b.imag;
             }
-
-            printf("\n");
+            //printf("\n");
         }
-        printf("End, next stage!\n");
+        //printf("End, next stage!\n");
     }
 
     end = clock();
-    printf("FFT: %lfs\n", (end-start) / (double)(CLOCKS_PER_SEC));
-    
+    printf("FFT, N: %d, spends time: %lfs\n", N, (end-start) / (double)(CLOCKS_PER_SEC));
+
     fft_info->output = x;
 }
 
@@ -156,10 +153,12 @@ int main(int argc, char **argv)
 
     fft_info.len = N;
     fft_info.input = y;
-    //print_complex_array(fft_info.input, fft_info.len);
+    printf("Input array:\n");
+    print_complex_array(fft_info.input, fft_info.len);
 
     /* Fast Fourier Tranform (FFT) */
     FFT(&fft_info);
+    printf("FFT:\n");
     print_complex_array(fft_info.output, fft_info.len);
 
     return 0;
