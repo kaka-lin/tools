@@ -54,13 +54,13 @@ complex *IDFT(complex *x, int N)
 int main(int argc, char **argv)
 {   
     /* Sampling information */
-    int fs = 16;
+    int fs = 8;
     double Ts = 1.0 / fs;
     double t = 1.0;
     int N = fs * t;
     
     /* signal information */ 
-    int f = 5;
+    int f = 1;
     double *x = arange(0, t, Ts);
     
     // y = cos(2*pi*f*x)
