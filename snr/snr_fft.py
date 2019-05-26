@@ -27,7 +27,7 @@ def awgn(x, snr):
 
 if __name__ == "__main__":
     # sampling and signal information
-    fs, data = wav.read("audio/test1.wav")
+    fs, data = wav.read("audio/test.wav")
     Ts = 1.0 / fs
     N = len(data)
     t = N / fs
