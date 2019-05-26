@@ -8,7 +8,9 @@
 
 - [rpi-gpio](https://github.com/kaka-lin/tools/tree/master/rpi-gpio)
 
-- [fft-and-snr](https://github.com/kaka-lin/tools/tree/master/fft-and-snr)
+- [fft](https://github.com/kaka-lin/tools/tree/master/fft)
+
+- [snr](https://github.com/kaka-lin/tools/tree/master/snr)
 
 - [audio](https://github.com/kaka-lin/tools/tree/master/audio)
 
