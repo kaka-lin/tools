@@ -4,12 +4,11 @@ TCPATH ?=
 
 # Kernel Headers path
 KERNELHEADERS = /usr/include/
+INCLUDES = -I$(KERNELHEADERS) -I/usr/local/include/
 
 CC := ${TCPATH}gcc
 CFLAGS = -Wall -g
-LDFLAGS = -lpthread -lm
-
-INCLUDES = -I$(KERNELHEADERS) -I/usr/local/include/
+LDFLAGS = -lm
 
 SRCDIR = src
 SOURCES = $(wildcard $(SRCDIR)/*.c)
@@ -19,14 +18,15 @@ EXEC = bitreverse
 all: $(EXEC)
 
 $(EXEC): $(OBJECTS)
-	$(CC) $(CFLAGS) -o $(EXEC) $(OBJECTS) $(LDFLAGS)
+	$(CC) $(CFLAGS) -static -o $(EXEC) $(OBJECTS) $(LDFLAGS)
 
 .c.o:
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 clean:
-	rm -f $(OBJECTS) $(EXEC)
+	rm -rf $(OBJECTS) $(EXEC)
 
 install:
 
-.PHONY: clean alls
+.PHONY: clean all
+

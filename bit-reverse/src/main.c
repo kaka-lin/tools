@@ -7,21 +7,21 @@
 // bit-reversal permutation
 void bit_reverse(int N)
 {
-    /* bit-reverse 
-    * 
-    * ex:
-    *     3 bit -> max 7
-    *     x[0], (000) -> (000), x[0]
-    *     x[1], (001) -> (100), x[4]
-    *     x[2], (010) -> (010), x[2]
-    *     x[3], (011) -> (110), x[6]
-    *     and so on. 
-    * sol:
-    *     011, 從最右邊開始取值,如果為1, 就加到最左邊依序遞減
-    *     [i = 0]: 1 -> 000 | 100 (1 << index (N = 3 => index = N - i - 1))
-    *     [i = 1]: 1 -> 100 | 010 (1 << index (N = 3 => index = N - i - 1))
-    *     [i = 2]: 0 不做事情
-    */
+    // bit-reverse 
+    // 
+    // ex:
+    //     3 bit -> max 7
+    //     x[0], (000) -> (000), x[0]
+    //     x[1], (001) -> (100), x[4]
+    //     x[2], (010) -> (010), x[2]
+    //     x[3], (011) -> (110), x[6]
+    //     and so on. 
+    // sol:
+    //     011, 從最右邊開始取值,如果為1, 就加到最左邊依序遞減
+    //     [i = 0]: 1 -> 000 | 100 (1 << index (N = 3 => index = N - i - 1))
+    //     [i = 1]: 1 -> 100 | 010 (1 << index (N = 3 => index = N - i - 1))
+    //     [i = 2]: 0 不做事情
+    // 
     int length = pow(2, N);
     int *reverse = calloc(length, sizeof(int));
 
@@ -45,8 +45,10 @@ int main(int argc, char **argv)
     int N;
 
     ret = parse_args(&N, argc, argv);
+    if (ret)
+        return EXIT_FAILURE; // 1
 
     bit_reverse(N);
 
-    return 0;
+    return EXIT_SUCCESS; // 0
 }

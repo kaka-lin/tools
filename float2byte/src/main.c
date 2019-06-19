@@ -8,16 +8,17 @@ struct myFloat {
         BYTE data[sizeof(float)];
     };
 };
+typedef struct myFloat myFloat;
 
 int main()
 {
-    myFloat f;
+    myFloat float_data;
     char tmp[128];
 
-    f.f = 17.625f;
+    float_data.f = 17.625f;
 
-    sprintf(tmp, "%x %x %x %x", f.data[0], f.data[1],
-        f.data[2], f.data[3]);
+    sprintf(tmp, "%x %x %x %x", float_data.data[0], float_data.data[1],
+        float_data.data[2], float_data.data[3]);
     printf("%s\n", tmp);
 
     return 0;

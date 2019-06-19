@@ -13,7 +13,7 @@ LDFLAGS = -lm
 SRCDIR = src
 SOURCES = $(wildcard $(SRCDIR)/*.c)
 OBJECTS := $(SOURCES:.c=.o)
-EXEC = hexdump
+EXEC = get-available-space
 
 all: $(EXEC)
 

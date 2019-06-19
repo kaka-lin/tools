@@ -3,6 +3,6 @@
 
 void print_usage(char *name);
 
-int parse_args(int *N, int argc, char **argv);
+int parse_args(char **path, int argc, char **argv);
 
 #endif // ARGS_H
