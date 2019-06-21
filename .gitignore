@@ -27,6 +27,7 @@ fft-and-snr/src/c/dft
 fft-and-snr/src/c/fft
 bit-reverse/bitreverse
 get-available-space/get-available-space
+linux-cp/linux-cp
 
 # audio 
 
