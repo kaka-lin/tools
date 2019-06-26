@@ -10,14 +10,12 @@ int main()
     FILE *fp;
     int count = 0;
     const char *myfifo = "/tmp/myfifo";
-  
-    // Creating the named file (FIFO) 
-    // mkfifo(<pathname>, <permission>) 
+
     mkfifo(myfifo, 0666); 
 
     while (1) {
         count += 1;
-        fp = fopen(myfifo, "w"); 
+        fp = fopen(myfifo, "w");
         printf("Write: test%d\n", count);
         fprintf(fp, "test%d\n", count);
         fclose(fp);

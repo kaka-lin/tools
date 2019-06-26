@@ -6,24 +6,30 @@
 #include <sys/types.h>
 #include <assert.h>
 #include <sys/select.h>
+
+#define MAX_BUFFER 256
   
 int main() 
 {
-    int ret;
-    FILE *fp;  
-    char buff[255];
+    int fd;
+    char buff[MAX_BUFFER];
     const char *myfifo = "/tmp/myfifo";
-    fd_set fds;
-    struct timeval tv;
-    tv.tv_sec = 0;
-    tv.tv_usec = 1000;
 
-    while (1) {
-        fp = fopen(myfifo, "r");
+    for (;;) {
+        fd = open(myfifo, O_RDONLY | O_NONBLOCK);
+
+        fd_set fds;
+        struct timeval tv;
+        int ret;
+
         FD_ZERO(&fds);
-        FD_SET(fileno(fp), &fds);
+        FD_SET(fd, &fds);
 
-        ret = select(fileno(fp) + 1, &fds, NULL, NULL, &tv);
+        tv.tv_sec = 2;
+        tv.tv_usec = 0;
+
+        // int select(int numfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+        ret = select(fd + 1, &fds, NULL, NULL, &tv);
         if (-1 == ret) {
             printf("continue\n");
             continue;
@@ -32,14 +38,10 @@ int main()
             printf("break\n");
             break;
         }
- 
-        if(fgets(buff, 255, fp) != NULL) 
-            printf("Read: %s", buff);
-
-        fclose(fp);
-
-        if (!strncmp(buff, "test10", 6))
-            break;
+        
+        read(fd, buff, MAX_BUFFER);
+        printf("Read: %s\n", buff);
+        close(fd);
     }
 
     return 0; 
