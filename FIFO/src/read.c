@@ -40,11 +40,11 @@ int main()
             continue;
         }
         if (0 == ret) {
-            printf("break\n");
+            printf("End!\n");
             break;
         }
         
-        if(fgets(buff, MAX_BUFFER, fp) != NULL) 
+        while(fgets(buff, MAX_BUFFER, fp) != NULL) 
             printf("Read: %s", buff);
 
         fclose(fp);
