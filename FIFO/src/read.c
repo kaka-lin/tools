@@ -11,12 +11,15 @@
   
 int main() 
 {
+    FILE *fp = NULL;
     int fd;
     char buff[MAX_BUFFER];
     const char *myfifo = "/tmp/myfifo";
 
     for (;;) {
         fd = open(myfifo, O_RDONLY | O_NONBLOCK);
+        // fdopen(): transform fd into fp
+        fp = fdopen(fd, "r");
 
         fd_set fds;
         struct timeval tv;
@@ -25,10 +28,12 @@ int main()
         FD_ZERO(&fds);
         FD_SET(fd, &fds);
 
-        tv.tv_sec = 2;
+        tv.tv_sec  = 2;
         tv.tv_usec = 0;
 
-        // int select(int numfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+        // int select(int numfds, fd_set *readfds, 
+        //            fd_set *writefds, fd_set *exceptfds, 
+        //            struct timeval *timeout);
         ret = select(fd + 1, &fds, NULL, NULL, &tv);
         if (-1 == ret) {
             printf("continue\n");
@@ -39,9 +44,10 @@ int main()
             break;
         }
         
-        read(fd, buff, MAX_BUFFER);
-        printf("Read: %s\n", buff);
-        close(fd);
+        if(fgets(buff, MAX_BUFFER, fp) != NULL) 
+            printf("Read: %s", buff);
+
+        fclose(fp);
     }
 
     return 0; 
