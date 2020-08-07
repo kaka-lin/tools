@@ -14,3 +14,10 @@
 
 - [audio](https://github.com/kaka-lin/tools/tree/master/audio)
 
+- [bit-reverse](https://github.com/kaka-lin/tools/tree/master/bit-reverse)
+  
+- [FIFO](https://github.com/kaka-lin/tools/tree/master/FIFO)
+
+- [get-available-space](https://github.com/kaka-lin/tools/tree/master/get-available-space)
+
+- [linux-cp](https://github.com/kaka-lin/tools/tree/master/linux-cp)
